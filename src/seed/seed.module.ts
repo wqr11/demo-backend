@@ -1,15 +1,15 @@
+import { Item } from '@/items/items.entity';
 import { Module } from '@nestjs/common';
-import { AppController } from '@/app.controller';
-import { AppService } from '@/app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { SeedService } from './seed.service';
+import { SeedCommand } from './seed.command';
 import {
   POSTGRES_DB,
   POSTGRES_HOST,
   POSTGRES_PASSWORD,
   POSTGRES_PORT,
   POSTGRES_USER,
-} from './config';
-import { ItemsModule } from '@/items.module';
+} from '@/config';
 
 @Module({
   imports: [
@@ -20,12 +20,11 @@ import { ItemsModule } from '@/items.module';
       username: POSTGRES_USER,
       password: POSTGRES_PASSWORD,
       database: POSTGRES_DB,
-      entities: [],
-      synchronize: false,
+      entities: [Item],
+      synchronize: true,
     }),
-    ItemsModule,
+    TypeOrmModule.forFeature([Item]),
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  providers: [SeedService, SeedCommand],
 })
-export class AppModule {}
+export class SeedModule {}
