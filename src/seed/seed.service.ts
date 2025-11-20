@@ -11,7 +11,7 @@ export class SeedService {
 
   async createItems() {
     const totalItems = 50_000;
-    const chunkSize = 1000;
+    const chunkSize = 1_000;
 
     console.log(
       `Starting to create ${totalItems} items in chunks of ${chunkSize}...`,

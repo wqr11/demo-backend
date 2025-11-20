@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AppController } from '@/app/app.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
 import {
   POSTGRES_DB,
   POSTGRES_HOST,
@@ -10,6 +11,7 @@ import {
 } from '../config';
 import { ItemsModule } from '@/items/items.module';
 import { Item } from '@/items/items.entity';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -21,10 +23,20 @@ import { Item } from '@/items/items.entity';
       password: POSTGRES_PASSWORD,
       database: POSTGRES_DB,
       entities: [Item],
-      synchronize: true,
+      // Should be turned off for production!
+      synchronize: false,
+    }),
+    CacheModule.register({
+      isGlobal: true,
     }),
     ItemsModule,
   ],
   controllers: [AppController],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: CacheInterceptor,
+    },
+  ],
 })
 export class AppModule {}

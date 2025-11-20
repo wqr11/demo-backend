@@ -8,7 +8,6 @@ import {
 
 @Entity()
 export class Item {
-  @Index()
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
