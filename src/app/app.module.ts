@@ -12,6 +12,7 @@ import {
 import { ItemsModule } from '@/items/items.module';
 import { Item } from '@/items/items.entity';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { DatabaseService } from '@/db/db.service';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
       username: POSTGRES_USER,
       password: POSTGRES_PASSWORD,
       database: POSTGRES_DB,
+      // Migrations are inside data-source.ts file
       entities: [Item],
       // Should be turned off for production!
       synchronize: false,
@@ -33,6 +35,7 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
   ],
   controllers: [AppController],
   providers: [
+    DatabaseService,
     {
       provide: APP_INTERCEPTOR,
       useClass: CacheInterceptor,

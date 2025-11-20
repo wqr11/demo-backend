@@ -9,7 +9,30 @@ export class SeedService {
     @InjectRepository(Item) private readonly itemRepository: Repository<Item>,
   ) {}
 
+  async shouldSeed(): Promise<boolean> {
+    try {
+      const count = await this.itemRepository.count();
+
+      if (count === 0) {
+        console.log('The database is empty - starting seeding ...');
+        return true;
+      }
+
+      console.log('The database is NOT empty - ommitting seeding ...');
+      return false;
+    } catch {
+      console.log('ERROR during shouldSeed check - omitting seeding ...');
+      return true;
+    }
+  }
+
   async createItems() {
+    const shouldSeed = await this.shouldSeed();
+
+    if (!shouldSeed) {
+      return;
+    }
+
     const totalItems = 50_000;
     const chunkSize = 1_000;
 
