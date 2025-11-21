@@ -1,4 +1,9 @@
-import { Module } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { AppController } from '@/app/app.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
@@ -13,6 +18,7 @@ import { ItemsModule } from '@/items/items.module';
 import { Item } from '@/items/items.entity';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { DatabaseService } from '@/db/db.service';
+import { CorsMiddleware } from '@/middleware/cors.middleware';
 
 @Module({
   imports: [
@@ -26,7 +32,8 @@ import { DatabaseService } from '@/db/db.service';
       // Migrations are inside data-source.ts file
       entities: [Item],
       // Should be turned off for production!
-      synchronize: false,
+      // ONLY FOR DEVELOPMENT!
+      synchronize: true,
     }),
     CacheModule.register({
       isGlobal: true,
@@ -42,4 +49,11 @@ import { DatabaseService } from '@/db/db.service';
     },
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(CorsMiddleware).forRoutes({
+      path: '*',
+      method: RequestMethod.ALL,
+    });
+  }
+}

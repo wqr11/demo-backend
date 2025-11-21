@@ -13,19 +13,17 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
-    networks:
-      - demo
 
-  migrate:
-    build: .
-    command: sh -c 'npx typeorm migration:run -d dist/db/data-source.js'
+  seed:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: pnpm seed
     env_file:
       - .env
     depends_on:
       db:
         condition: service_healthy
-    networks:
-      - demo
 
   backend:
     build:
@@ -34,12 +32,7 @@ services:
     env_file:
       - .env
     depends_on:
-      - migrate
+      - seed
     restart: always
     ports:
       - 8000:8000
-    networks:
-      - demo
-
-networks:
-  demo:

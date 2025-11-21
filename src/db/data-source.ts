@@ -8,6 +8,8 @@ import {
 } from '@/config';
 import { Item } from '@/items/items.entity';
 
+// This currently does nothing!
+// Because migrations are not configured yet
 export const dataSource = new DataSource({
   type: 'postgres',
   host: POSTGRES_HOST,
@@ -17,6 +19,7 @@ export const dataSource = new DataSource({
   database: POSTGRES_DB,
   entities: [Item],
   migrations: [__dirname + '/migrations/**/*.ts'],
-  // Should be turned off for production!
+  // Should be FALSE for production!
+  // ONLY FOR DEVELOPMENT !!!
   synchronize: false,
 });
